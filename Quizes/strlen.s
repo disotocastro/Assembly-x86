@@ -14,16 +14,14 @@
 .text
 .global strLen
 
-loop:
-    mov %rdi, %rsi
-    mov %rdx, %rcx
-    mov, %r8, %r9
-    mov %rdi, %r9
-
 strLen:
-    db str (%rdi)
-    mov %rax, (equ $-strLen)  
-    mov len, %rax	# Se devuelve el valor en el registro AX
-    xor %rax, %rax
-    jl loop 
-    ret			# Retorna a C++
+    xor %rax, %rax     
+.loop:
+    cmpb $0, (%rdi)    
+    je .done           
+    inc %rdi            
+    inc %rax            
+    jmp .loop          
+
+.done:
+    ret               
