@@ -28,7 +28,7 @@ even:
     jmp     loop
 
 odd:
-    mull    (,%rax, 2)  # Si impar, multi por 2
+    mull    (%rax,%rax, 2)  # Si impar, multi por 2
     add     $1, %rax       
     jmp     loop
 
