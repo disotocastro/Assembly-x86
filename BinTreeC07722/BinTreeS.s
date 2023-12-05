@@ -38,10 +38,10 @@ sinOrder:					# Assembly routine to traverse binary tree in order
 # CARNET: C07722, 2%3 = 2, toca hacer post orden
 # 
 # 
-# BinNode* left; -> 8 bytes (ptr)
-# double key; -> 8 bytes
-# char stuff[STUFF_SIZE]; -> 22 bytes
-# BinNode* right; -> 8 bytes (ptr)
+# BinNode* left; -> 8 bytes (ptr) ................ 0
+# double key; -> 8 bytes.......................... +8
+# char stuff[STUFF_SIZE]; -> 22 bytes............ +30
+# BinNode* right; -> 8 bytes (ptr).............. +38 + 2 padding
 # 
 # 
 # 8 + 8 + 22 (carnet) = 38, ese mov debera de ser mov 38(%rdi), %rdi, pero tira error
@@ -109,7 +109,7 @@ ir_der:
     jmp endInsert
 
 crearNodo:
-    mov $42, %rdi              # tamaño del nodo (con padding) +2
+    mov $40, %rdi              # tamaño del nodo (con padding) +2
     call malloc                # llamar a malloc para crear un nuevo nodo
     test %rax, %rax            # verificar si malloc fue exitoso
 
@@ -133,34 +133,26 @@ endInsert:
 
 #######################################
 
+sdestroyTree:               
+    cmp     $0, %rdi        # comparr el nodo actual en rdi con 0 (NULL)
+    je      final_nulo      # si el nodo es NULL (es decir, %rdi es 0), salta a la etiqueta final_nulo
 
-sdestroyTree:
-    push %rbp
-    mov %rsp, %rbp
+    push    %rdi            # guardar el valor actual de %rdi (dirección del nodo actual) en la pila
 
-    mov %rdi, %r8  # r8 = nodo actual
+    mov     16(%rdi), %rdi  # dirección del hijo izquierdo del nodo actual en %rdi
+    call    sdestroyTree    # llamar recursivamente a sdestroyTree
 
-    cmp $0, %r8
-    je end_del  # Si el nodo es NULL, termina la función
+    pop     %rdi            # recupera la dirección del nodo actual de la pila
+    push    %rdi            # guardar nuevamente la dirección del nodo actual en la pila
 
-    # Destruir subárbol izquierdo
-    mov (%r8), %rdi
-    call sdestroyTree
+    mov     40(%rdi), %rdi  # Carga la dirección del hijo derecho del nodo actual en %rdi
+    call    sdestroyTree    # Llama recursivamente a sdestroyTree para eliminar el subárbol derecho
 
-    # Destruir subárbol derecho
-    mov 40(%r8), %rdi  # Considerar el padding para el hijo derecho
-    call sdestroyTree
+    pop     %rdi            # recuperar la dirección del nodo actual de la pila nuevamente
+    call    free            # Libera la memoria del nodo actual
 
-    # Liberar el nodo actual
-    mov %r8, %rdi
-    call free
-
-end_del:
-    mov %rbp, %rsp
-    pop %rbp
-    ret
-
-
+final_nulo:
+    ret                     # Retorna de la función
 
 
 # Support routines
